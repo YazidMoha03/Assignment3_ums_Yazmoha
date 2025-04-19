@@ -1,0 +1,30 @@
+package org.ac.cst8277.mohamed.yazid.ums;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.UUID;
+
+@RestController
+@RequestMapping("/messages")
+public class MessageController {
+
+    @Autowired
+    private UmsRepository userRepo;
+
+    @PostMapping
+    public ResponseEntity<String> postMessage(@RequestBody Message message) {
+        message.setTimestamp(LocalDateTime.now());
+        userRepo.saveMessage(message);
+        return ResponseEntity.ok("Message posted");
+    }
+
+    @GetMapping("/{userId}")
+    public ResponseEntity<List<Message>> getMessagesByUser(@PathVariable UUID userId) {
+        List<Message> messages = userRepo.findAllMessagesByUserId(userId);
+        return ResponseEntity.ok(messages);
+    }
+}
